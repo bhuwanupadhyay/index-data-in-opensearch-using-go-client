@@ -2,8 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -20,14 +18,7 @@ type IngestorService struct {
 	opensearchClient *opensearch.Client
 }
 
-func indexIntoOpensearch(opensearchClient *opensearch.Client, record []byte) error {
-	var jsonObj interface{}
-	err := json.Unmarshal(record, &jsonObj)
-	if err != nil {
-		return err
-	}
-	content := string(record)
-
+func indexIntoOpensearch(opensearchClient *opensearch.Client, content string) error {
 	log.Debugf("Opensearch indexing: %s", content)
 
 	req := opensearchapi.IndexRequest{}
@@ -44,7 +35,7 @@ func indexIntoOpensearch(opensearchClient *opensearch.Client, record []byte) err
 		if scanner.Scan() {
 			line = scanner.Text()
 		}
-		return fmt.Errorf("ingestion status %s (%d): %s", resp.Status, resp.StatusCode, line)
+		return fmt.Errorf("ingestion status (%d): %s", resp.StatusCode, line)
 	}
 
 	log.Debugf("Opensearch indexing finished: %s", content)
@@ -55,15 +46,15 @@ func indexIntoOpensearch(opensearchClient *opensearch.Client, record []byte) err
 
 func (sr IngestorService) IndexJson(ctx context.Context, in *pb.IndexRequest) (*pb.Response, error) {
 	log.Debugf("---Opensearch: IndexJson--")
-	content, err := base64.StdEncoding.DecodeString(in.GetContent())
+	content := in.GetContent()
+	if len(content) == 0 {
+		return badRequest(fmt.Errorf("empty content"))
+	}
+	err := indexIntoOpensearch(sr.opensearchClient, content)
 	if err != nil {
 		return badRequest(err)
 	}
-	err = indexIntoOpensearch(sr.opensearchClient, content)
-	if err != nil {
-		return badRequest(err)
-	}
-	return &pb.Response{Status: "200", Message: "Successfully published"}, nil
+	return &pb.Response{Status: "200", Message: "Successfully indexed"}, nil
 }
 
 func badRequest(err error) (*pb.Response, error) {

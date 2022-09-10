@@ -15,4 +15,16 @@ build_docker: build_proto
 	docker-compose build
 
 start_docker: build_docker
-	docker-compose up -d && docker ps -a
+	docker-compose up -d
+
+remove_docker:
+	docker-compose down --rmi all -v --remove-orphans
+
+# LOGGING
+
+logs_ingestor:
+	docker logs opensearch-ingestor -f
+
+logs_opensearch:
+	docker logs opensearch-node1 -f
+

@@ -35,22 +35,13 @@ func getOpensearchClient() *opensearch.Client {
 	if err != nil {
 		log.Errorf("Error during opensearch client configuration: %v", err)
 	}
-	// info, err := opensearchClient.Info()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// log.Infof("OpenSearch client connection status: %v", info.Status())
-	// if info.IsError() {
-	// 	panic(info)
-	// }
 	return opensearchClient
 }
 
 func main() {
 	setupArguments()
 
-	// Log as JSON instead of the default ASCII formatter.
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetReportCaller(true)
 	log.SetOutput(os.Stdout)
 	level, _ := log.ParseLevel(logLevel)
 	log.SetLevel(level)
