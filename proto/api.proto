@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+option go_package = ".;pb";
+
+service Ingestor {
+
+  rpc IndexJson (IndexRequest) returns (Response) {
+    option (google.api.http) = { post:"/ingestor/index", body: "*"  };
+  }
+
+}
+
+message IndexRequest {
+  string Content = 1;
+}
+
+message Response {
+  string Status = 1;
+  string Message = 2;
+}

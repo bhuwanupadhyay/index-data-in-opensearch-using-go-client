@@ -1,0 +1,16 @@
+version: v1
+plugins:
+  - name: go
+    out: ../ingestor/pb
+    opt:
+      - paths=source_relative
+  - name: go-grpc
+    out: ../ingestor/pb
+    opt:
+      - paths=source_relative
+  - name: grpc-gateway
+    out: ../ingestor/pb
+    opt:
+      - paths=source_relative
+  - name: openapiv2
+    out: ../ingestor
