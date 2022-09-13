@@ -17,6 +17,9 @@ build_docker: build_proto
 start_docker: build_docker
 	docker-compose up -d
 
+stop_docker:
+	docker-compose down --remove-orphans
+
 remove_docker:
 	docker-compose down --rmi all -v --remove-orphans
 

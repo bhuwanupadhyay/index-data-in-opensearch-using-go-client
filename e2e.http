@@ -3,7 +3,7 @@
 POST http://localhost:8080/ingestor/index
 
 {
-    "Content" : "{\"name\":\"BhuwanPrasadUpadhyay\"\"message\":\"Protocalbufferisawesome!\"}"
+    "Content" : "{\"name\":\"BhuwanPrasadUpadhyay\"\"message\":\"Protocal buffer is awesome!\"}"
 }
 
     
